@@ -1,10 +1,7 @@
 import math
 from flask import Flask, render_template, jsonify, request
 
-# Import quantum backend functions
-from quantum.bell_states import create_bell, run_circuit, get_circuit_image_b64 as get_bell_circuit_b64
-from quantum.entanglement import create_entanglement, run_entanglement, get_circuit_image_b64 as get_entanglement_circuit_b64
-from quantum.teleportation import create_teleportation, run_teleportation, get_circuit_image_b64 as get_teleportation_circuit_b64
+# Quantum backend functions will be lazy-loaded inside routes to improve startup speed
 
 app = Flask(__name__)
 
@@ -21,6 +18,8 @@ def simulate_bell():
       state_type: 'phi_plus', 'phi_minus', 'psi_plus', 'psi_minus'
       shots: number of simulation runs (default: 1024)
     """
+    from quantum.bell_states import create_bell, run_circuit, get_circuit_image_b64 as get_bell_circuit_b64
+
     state_type = request.args.get("state_type", "phi_plus")
     try:
         shots = int(request.args.get("shots", 1024))
@@ -64,6 +63,8 @@ def simulate_entanglement():
       bob_basis: 'Z' or 'X'
       shots: number of simulation runs (default: 1024)
     """
+    from quantum.entanglement import create_entanglement, run_entanglement, get_circuit_image_b64 as get_entanglement_circuit_b64
+
     alice_basis = request.args.get("alice_basis", "Z").upper()
     bob_basis = request.args.get("bob_basis", "Z").upper()
     try:
@@ -98,6 +99,8 @@ def simulate_teleportation():
       theta: angle in radians (default: 0.0)
       shots: number of simulation runs (default: 1024)
     """
+    from quantum.teleportation import create_teleportation, run_teleportation, get_circuit_image_b64 as get_teleportation_circuit_b64
+
     try:
         theta = float(request.args.get("theta", 0.0))
     except ValueError:
